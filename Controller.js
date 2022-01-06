@@ -72,6 +72,8 @@ app.post('/itempedidos', async(req, res)=>{
     });
 });
 
+
+
 app.get('/listaservicos', async(req, res)=>{
     await servico.findAll({
         // raw: true
@@ -100,6 +102,25 @@ app.get('/servico/:id', async(req, res)=>{
         });
     });
 });
+
+
+
+app.get('/listaclientes', async(req, res)=>{
+    await cliente.findAll({
+        // raw: true
+        order: [['nascimento', "ASC"]]
+    }).then(function(clientes){
+        res.json({clientes})
+    });
+});
+
+app.get('/quantclientes', async(req, res)=>{
+    await cliente.count('id').then(function(clientes){
+        res.json({clientes})
+    });
+});
+
+
 
 let port = process.env.PORT || 3001;
 
