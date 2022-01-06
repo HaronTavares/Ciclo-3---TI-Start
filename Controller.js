@@ -74,9 +74,30 @@ app.post('/itempedidos', async(req, res)=>{
 
 app.get('/listaservicos', async(req, res)=>{
     await servico.findAll({
-        raw: true  
+        // raw: true
+        order: [['nome', 'ASC']]  
     }).then(function(servicos){
         res.json({servicos})
+    });
+});
+
+app.get('/ofertaservicos', async (req, res)=>{
+    await servico.count('id').then(function(servicos){
+        res.json({servicos})
+    });
+});
+
+app.get('/servico/:id', async(req, res)=>{
+    await servico.findByPk(req.params.id).then(serv =>{
+        return res.json({
+            error: false,
+            serv
+        });
+    }).catch(erro =>{
+        return res.status(400).json({
+            error: true,
+            message: "Erro: não foi possível conectar!"
+        });
     });
 });
 
