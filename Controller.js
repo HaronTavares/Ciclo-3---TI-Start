@@ -30,35 +30,47 @@ app.post('/servicos', async(req, res)=>{
     });
 });
 
-app.get('/clientes', async(req, res)=>{
-    await cliente.create({
-        nome: 'Haron Tavares',
-        endereco: 'Rua Martin Afonso',
-        cidade: 'Maringá',
-        uf: 'PR',
-        nascimento: "09/02/2001",
-        clienteDesde: "06/01/2022"
+app.post('/clientes', async(req, res)=>{
+    await cliente.create(req.body).then(function(){
+        return res.json({
+            error: false,
+            message: "Cliente criado com sucesso!"
+        })
+    }).catch(function(erro){
+        return res.status(400).json({
+            error: true,
+            message: "Foi impossível se conectar."
+        })
     });
-    res.send('Cliente criado com sucesso!')
 });
 
-app.get('/pedidos', async(req, res)=>{
-    await pedido.create({
-        data: "06/01/2022",
-        ClienteId: 3
+app.post('/pedidos', async(req, res)=>{
+    await pedido.create(req.body).then(function(){
+        return res.json({
+            error: false,
+            message: "Pedido criado com sucesso"
+        })
+    }).catch(function(){
+        return res.json({
+            error: true,
+            message: "Foi impossível se conectar."
+        })
     });
-    res.send("Pedido criado com sucesso!")
-})
+});
 
-app.get('/itempedidos', async(req, res)=>{
-    await itempedido.create({
-        PedidoId: 6,
-        ServicoId: 1,
-        quantidade: 3,
-        valor: 258.00
-    })
-    res.send("Item criado com sucesso!")
-})
+app.post('/itempedidos', async(req, res)=>{
+    await itempedido.create(req.body).then(function(){
+        return res.json({
+            error: false,
+            messagem: "Item criado com sucesso!"
+        })
+    }).catch(function(){
+        return res.json({
+            error: true,
+            message: "Foi impossível se conectar."
+        })
+    });
+});
 
 let port = process.env.PORT || 3001;
 
