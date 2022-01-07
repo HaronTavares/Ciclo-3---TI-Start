@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors');
 
 const models = require('./models');
+const { get } = require('express/lib/response');
+const req = require('express/lib/request');
 
 const app = express();
 app.use(cors());
@@ -100,6 +102,15 @@ app.get('/servico/:id', async(req, res)=>{
             error: true,
             message: "Erro: não foi possível conectar!"
         });
+    });
+});
+
+app.get('/atualizaservico', async(req,res)=>{
+    await servico.findByPk(1).then(serv =>{
+        serv.nome = 'HTML/CSS/JS';
+        serv.descricao = 'Páginas estáticas e dinâmicas estilizadas';
+        serv.save();
+        return res.json({serv});
     });
 });
 
