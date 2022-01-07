@@ -105,12 +105,19 @@ app.get('/servico/:id', async(req, res)=>{
     });
 });
 
-app.get('/atualizaservico', async(req,res)=>{
-    await servico.findByPk(1).then(serv =>{
-        serv.nome = 'HTML/CSS/JS';
-        serv.descricao = 'Páginas estáticas e dinâmicas estilizadas';
-        serv.save();
-        return res.json({serv});
+app.put('/atualizaservico', async(req,res)=>{
+    await servico.update(req.body, {
+        where: {id: req.body.id}
+    }).then(()=>{
+        return res.json({
+            error: false,
+            message: "Serviço foi alterado com sucesso!"
+        });
+    }).catch((erro)=>{
+        return res.status(400).json({
+            error: true,
+            message: "Erro na alteração do serviço."
+        });
     });
 });
 
