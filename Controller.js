@@ -1,9 +1,11 @@
 const express = require('express');
 const cors = require('cors');
 
+const {Sequelize} = require('./models');
+
 const models = require('./models');
-const { get } = require('express/lib/response');
-const req = require('express/lib/request');
+// const { get } = require('express/lib/response');
+// const req = require('express/lib/request');
 
 const app = express();
 app.use(cors());
@@ -139,6 +141,50 @@ app.get('/quantclientes', async(req, res)=>{
 });
 
 
+
+app.get('/pedidos/:id', async(req, res)=>{
+    await pedido.findByPk(req.params.id, {include:[{all: true}]})
+    .then(ped =>{
+        return res.json({ped});
+    });
+});
+
+app.put('/pedidos/:id/editaritem', async(req, res)=>{
+    const item = {
+        quantidade: req.body.quantidade,
+        valor: req.body.valor
+    };
+
+    if (!await pedido.findByPk(req.params.id)){
+        return res.status(400).json({
+            error: true,
+            message: 'Pedido não foi encontrado.'
+        });
+    };
+
+    if (!await servico.findByPk(req.body.ServicoId)){
+        return res.status(400).json({
+            error: true,
+            message: 'Serviço não foi encontrado.'
+        });
+    };
+
+    await itempedido.update(item, {
+        where: Sequelize.and({ServicoId: req.body.ServicoId}, 
+            {PedidoId: req.params.id})
+    }).then(itens =>{
+        return res.json({
+            error: false,
+            message: "Pedido foi alterado com sucesso!",
+            itens
+        });
+    }).catch(erro =>{
+        return res.status(400).json({
+            error: true,
+            message: "Erro: não foi possível alterar."
+        });
+    });
+});
 
 let port = process.env.PORT || 3001;
 
