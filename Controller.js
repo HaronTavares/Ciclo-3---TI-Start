@@ -80,8 +80,8 @@ app.post('/itempedidos', async(req, res)=>{
 
 app.get('/listaservicos', async(req, res)=>{
     await servico.findAll({
-        // raw: true
-        order: [['nome', 'ASC']]  
+        raw: true
+        // order: [['nome', 'ASC']]  
     }).then(function(servicos){
         res.json({servicos})
     });
@@ -127,8 +127,8 @@ app.put('/atualizaservico', async(req,res)=>{
 
 app.get('/listaclientes', async(req, res)=>{
     await cliente.findAll({
-        // raw: true
-        order: [['nascimento', "ASC"]]
+        raw: true
+        // order: [['nascimento', "ASC"]]
     }).then(function(clientes){
         res.json({clientes})
     });
@@ -182,6 +182,24 @@ app.put('/pedidos/:id/editaritem', async(req, res)=>{
         return res.status(400).json({
             error: true,
             message: "Erro: não foi possível alterar."
+        });
+    });
+});
+
+
+
+app.get('/excluircliente/:id', async (req, res) =>{
+    await cliente.destroy({
+        where: {id: req.params.id}
+    }).then(()=>{
+        return res.json({
+            error: false,
+            message: "Cliente foi excluído com sucesso!"
+        });
+    }).catch(()=>{
+        return res.status(400).json({
+            error: true,
+            message: "Erro ao escluir o cliente."
         });
     });
 });
