@@ -14,9 +14,9 @@ module.exports = (sequelize, DataTypes) => {
       Pedido.belongsTo(models.Cliente, {
         foreignKey: 'ClienteId', as: 'clientes'});
       Pedido.belongsToMany(models.Servico,{
-        foreignKey: 'ServicoId', through: 'ItemPedido', as: 'servicos_ped'});
-      Pedido.hasMany(models.ItemPedido, {
-        foreignKey: 'PedidoId', as: 'item_pedidos'});
+        foreignKey: 'PedidoId', otherKey: 'ServicoId', through: 'ItemPedido', as: 'servicos_ped'});
+      // Pedido.hasMany(models.ItemPedido, {
+      //   foreignKey: 'PedidoId', as: 'item_pedidos'});
     }
   };
   Pedido.init({
