@@ -20,6 +20,8 @@ app.get('/', function(req, res){
     res.send('Olá, mundo!')
 });
 
+    //Servicos
+
 app.post('/servicos', async(req, res)=>{
     await servico.create(req.body).then(function(){
         return res.json({
@@ -33,50 +35,6 @@ app.post('/servicos', async(req, res)=>{
         })
     });
 });
-
-app.post('/clientes', async(req, res)=>{
-    await cliente.create(req.body).then(function(){
-        return res.json({
-            error: false,
-            message: "Cliente criado com sucesso!"
-        })
-    }).catch(function(erro){
-        return res.status(400).json({
-            error: true,
-            message: "Foi impossível se conectar."
-        })
-    });
-});
-
-app.post('/pedidos', async(req, res)=>{
-    await pedido.create(req.body).then(function(){
-        return res.json({
-            error: false,
-            message: "Pedido criado com sucesso"
-        })
-    }).catch(function(){
-        return res.json({
-            error: true,
-            message: "Foi impossível se conectar."
-        })
-    });
-});
-
-app.post('/itempedidos', async(req, res)=>{
-    await itempedido.create(req.body).then(function(){
-        return res.json({
-            error: false,
-            messagem: "Item criado com sucesso!"
-        })
-    }).catch(function(){
-        return res.json({
-            error: true,
-            message: "Foi impossível se conectar."
-        })
-    });
-});
-
-
 
 app.get('/listaservicos', async(req, res)=>{
     await servico.findAll({
@@ -123,7 +81,37 @@ app.put('/atualizaservico', async(req,res)=>{
     });
 });
 
+app.get('/excluirservico/:id', async (req, res) =>{
+    await servico.destroy({
+        where: {id: req.params.id}
+    }).then(()=>{
+        return res.json({
+            error: false,
+            message: "Serviço foi excluído com sucesso!"
+        });
+    }).catch(()=>{
+        return res.status(400).json({
+            error: true,
+            message: "Erro ao excluir o serviço."
+        });
+    });
+});
 
+    //Clientes
+
+app.post('/clientes', async(req, res)=>{
+    await cliente.create(req.body).then(function(){
+        return res.json({
+            error: false,
+            message: "Cliente criado com sucesso!"
+        })
+    }).catch(function(erro){
+        return res.status(400).json({
+            error: true,
+            message: "Foi impossível se conectar."
+        })
+    });
+});
 
 app.get('/listaclientes', async(req, res)=>{
     await cliente.findAll({
@@ -140,7 +128,82 @@ app.get('/quantclientes', async(req, res)=>{
     });
 });
 
+app.get('/cliente/:id', async(req, res)=>{
+    await cliente.findByPk(req.params.id).then(client =>{
+        return res.json({
+            error: false,
+            client
+        });
+    }).catch(erro =>{
+        return res.status(400).json({
+            error: true,
+            message: "Erro: não foi possível conectar!"
+        });
+    });
+});
 
+app.put('/atualizacliente', async(req,res)=>{
+    await cliente.update(req.body, {
+        where: {id: req.body.id}
+    }).then(()=>{
+        return res.json({
+            error: false,
+            message: "Cliente foi alterado com sucesso!"
+        });
+    }).catch((erro)=>{
+        return res.status(400).json({
+            error: true,
+            message: "Erro na alteração do cliente."
+        });
+    });
+});
+
+app.get('/excluircliente/:id', async (req, res) =>{
+    await cliente.destroy({
+        where: {id: req.params.id}
+    }).then(()=>{
+        return res.json({
+            error: false,
+            message: "Cliente foi excluído com sucesso!"
+        });
+    }).catch(()=>{
+        return res.status(400).json({
+            error: true,
+            message: "Erro ao excluir o cliente."
+        });
+    });
+});
+
+    //Pedidos
+
+app.post('/pedidos', async(req, res)=>{
+    await pedido.create(req.body).then(function(){
+        return res.json({
+            error: false,
+            message: "Pedido criado com sucesso"
+        })
+    }).catch(function(){
+        return res.json({
+            error: true,
+            message: "Foi impossível se conectar."
+        })
+    });
+});
+
+app.get('/listapedidos', async(req, res)=>{
+    await pedido.findAll({
+        raw: true
+        // order: [['nascimento', "ASC"]]
+    }).then(function(pedidos){
+        res.json({pedidos})
+    });
+});
+
+app.get('/quantpedidos', async(req, res)=>{
+    await pedido.count('id').then(function(pedidos){
+        res.json({pedidos})
+    });
+});
 
 app.get('/pedidos/:id', async(req, res)=>{
     await pedido.findByPk(req.params.id, {include:[{all: true}]})
@@ -149,7 +212,77 @@ app.get('/pedidos/:id', async(req, res)=>{
     });
 });
 
-app.put('/pedidos/:id/editaritem', async(req, res)=>{
+app.put('/atualizapedido', async(req,res)=>{
+    await pedido.update(req.body, {
+        where: {id: req.body.id}
+    }).then(()=>{
+        return res.json({
+            error: false,
+            message: "Pedido foi alterado com sucesso!"
+        });
+    }).catch((erro)=>{
+        return res.status(400).json({
+            error: true,
+            message: "Erro na alteração do pedido."
+        });
+    });
+});
+
+app.get('/excluirpedido/:id', async (req, res) =>{
+    await pedido.destroy({
+        where: {id: req.params.id}
+    }).then(()=>{
+        return res.json({
+            error: false,
+            message: "Pedido foi excluído com sucesso!"
+        });
+    }).catch(()=>{
+        return res.status(400).json({
+            error: true,
+            message: "Erro ao excluir o pedido."
+        });
+    });
+});
+
+    //Item Pedidos
+
+app.post('/itempedidos', async(req, res)=>{
+    await itempedido.create(req.body).then(function(){
+        return res.json({
+            error: false,
+            messagem: "Item criado com sucesso!"
+        })
+    }).catch(function(){
+        return res.json({
+            error: true,
+            message: "Foi impossível se conectar."
+        })
+    });
+});
+
+app.get('/listaitempedidos', async(req, res)=>{
+    await itempedido.findAll({
+        raw: true
+        // order: [['nascimento', "ASC"]]
+    }).then(function(itempedidos){
+        res.json({itempedidos})
+    });
+});
+
+app.get('/quantitempedidos', async(req, res)=>{
+    await itempedido.count('id').then(function(itempedidos){
+        res.json({itempedidos})
+    });
+});
+
+app.get('/pedidos/:id/itempedidos', async(req, res)=>{
+    await itempedido.findByPk(req.params.id, {include:[{all: true}]})
+    .then(itemped =>{
+        return res.json({itemped});
+    });
+});
+
+app.put('/pedidos/:id/atualizaitem', async(req, res)=>{
     const item = {
         quantidade: req.body.quantidade,
         valor: req.body.valor
@@ -175,7 +308,7 @@ app.put('/pedidos/:id/editaritem', async(req, res)=>{
     }).then(itens =>{
         return res.json({
             error: false,
-            message: "Pedido foi alterado com sucesso!",
+            message: "Item foi alterado com sucesso!",
             itens
         });
     }).catch(erro =>{
@@ -186,23 +319,24 @@ app.put('/pedidos/:id/editaritem', async(req, res)=>{
     });
 });
 
-
-
-app.get('/excluircliente/:id', async (req, res) =>{
-    await cliente.destroy({
-        where: {id: req.params.id}
+app.get('/pedido/:idPed/servico/:idServ/excluiritempedido', async (req, res) =>{
+    await itempedido.destroy({
+        where: Sequelize.and({PedidoId: req.params.idPed},
+            {ServicoId: req.params.idServ})
     }).then(()=>{
         return res.json({
             error: false,
-            message: "Cliente foi excluído com sucesso!"
+            message: "Item foi excluído com sucesso!"
         });
     }).catch(()=>{
         return res.status(400).json({
             error: true,
-            message: "Erro ao escluir o cliente."
+            message: "Erro ao excluir o item."
         });
     });
 });
+
+
 
 let port = process.env.PORT || 3001;
 
