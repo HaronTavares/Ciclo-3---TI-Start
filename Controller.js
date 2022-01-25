@@ -25,80 +25,80 @@ app.get('/', function(req, res){
 
     //Clientes
 
-    app.post('/clientes', async(req, res)=>{
-        await cliente.create(req.body).then(function(){
-            return res.json({
-                error: false,
-                message: "Cliente criado com sucesso!"
-            })
-        }).catch(function(erro){
-            return res.status(400).json({
-                error: true,
-                message: "Foi impossível se conectar."
-            })
-        });
+app.post('/clientes', async(req, res)=>{
+    await cliente.create(req.body).then(function(){
+        return res.json({
+            error: false,
+            message: "Cliente criado com sucesso!"
+        })
+    }).catch(function(erro){
+        return res.status(400).json({
+            error: true,
+            message: "Foi impossível se conectar."
+        })
     });
+});
     
-    app.get('/listaclientes', async(req, res)=>{
-        await cliente.findAll({
-            raw: true
-            // order: [['nascimento', "ASC"]]
-        }).then(function(clientes){
-            res.json({clientes})
-        });
+app.get('/listaclientes', async(req, res)=>{
+    await cliente.findAll({
+        raw: true
+        // order: [['nascimento', "ASC"]]
+    }).then(function(clientes){
+        res.json({clientes})
     });
+});
     
-    app.get('/quantclientes', async(req, res)=>{
-        await cliente.count('id').then(function(clientes){
-            res.json({clientes})
-        });
+app.get('/quantclientes', async(req, res)=>{
+    await cliente.count('id').then(function(clientes){
+        res.json({clientes})
     });
+});
     
-    app.get('/cliente/:id', async(req, res)=>{
-        await cliente.findByPk(req.params.id).then(client =>{
-            return res.json({
-                error: false,
-                client
-            });
-        }).catch(erro =>{
-            return res.status(400).json({
-                error: true,
-                message: "Erro: não foi possível conectar!"
-            });
+app.get('/cliente/:id', async(req, res)=>{
+    await cliente.findByPk(req.params.id).then(client =>{
+        return res.json({
+            error: false,
+            client
+        });
+    }).catch(erro =>{
+        return res.status(400).json({
+            error: true,
+            message: "Erro: não foi possível conectar!"
         });
     });
+});
     
-    app.put('/atualizacliente', async(req,res)=>{
-        await cliente.update(req.body, {
-            where: {id: req.body.id}
-        }).then(()=>{
-            return res.json({
-                error: false,
-                message: "Cliente foi alterado com sucesso!"
-            });
-        }).catch((erro)=>{
-            return res.status(400).json({
-                error: true,
-                message: "Erro na alteração do cliente."
-            });
+app.put('/atualizacliente', async(req,res)=>{
+    await cliente.update(req.body, {
+        where: {id: req.body.id}
+    }).then(()=>{
+        return res.json({
+            error: false,
+            message: "Cliente foi alterado com sucesso!"
+        });
+    }).catch((erro)=>{
+        return res.status(400).json({
+            error: true,
+            message: "Erro na alteração do cliente."
         });
     });
+});
     
-    app.get('/excluircliente/:id', async (req, res) =>{
-        await cliente.destroy({
-            where: {id: req.params.id}
-        }).then(()=>{
-            return res.json({
-                error: false,
-                message: "Cliente foi excluído com sucesso!"
-            });
-        }).catch(()=>{
-            return res.status(400).json({
-                error: true,
-                message: "Erro ao excluir o cliente."
-            });
+app.get('/excluircliente/:id', async (req, res) =>{
+    await cliente.destroy({
+        where: {id: req.params.id}
+    }).then(()=>{
+        return res.json({
+            error: false,
+            message: "Cliente foi excluído com sucesso!"
+        });
+    }).catch(()=>{
+        return res.status(400).json({
+            error: true,
+            message: "Erro ao excluir o cliente."
         });
     });
+});
 
     //Pedidos
 
