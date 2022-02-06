@@ -89,6 +89,23 @@ app.get('/cliente/:id/pedidos', async (req, res) => {
         });
 });
 
+app.get('/cliente/:id/compras', async (req, res) => {
+    await compra.findAll({
+        where: { ClienteId: req.params.id }
+    })
+        .then(compra => {
+            return res.json({
+                error: false,
+                compra
+            });
+        }).catch(erro => {
+            return res.status(400).json({
+                error: true,
+                message: "Erro: não foi possível conectar!"
+            });
+        });
+});
+
 app.put('/atualizacliente', async (req, res) => {
     await cliente.update(req.body, {
         where: { id: req.body.id }
@@ -127,7 +144,7 @@ app.post('/pedidos', async (req, res) => {
     await pedido.create(req.body).then(function () {
         return res.json({
             error: false,
-            message: "Pedido criado com sucesso"
+            message: "Pedido criado com sucesso!"
         })
     }).catch(function () {
         return res.json({
@@ -541,6 +558,23 @@ app.get('/produto/:id', async (req, res) => {
     });
 });
 
+app.get('/produto/:id/compras', async (req, res) => {
+    await itemcompra.findAll({
+        where: { ProdutoId: req.params.id }
+    })
+        .then(item => {
+            return res.json({
+                error: false,
+                item
+            });
+        }).catch(erro => {
+            return res.status(400).json({
+                error: true,
+                message: "Erro: não foi possível conectar!"
+            });
+        });
+});
+
 app.put('/atualizaproduto', async (req, res) => {
     await produto.update(req.body, {
         where: { id: req.body.id }
@@ -579,7 +613,7 @@ app.post('/itemcompras', async (req, res) => {
     await itemcompra.create(req.body).then(function () {
         return res.json({
             error: false,
-            messagem: "Item criado com sucesso!"
+            message: "Item criado com sucesso!"
         })
     }).catch(function () {
         return res.json({
@@ -592,8 +626,8 @@ app.post('/itemcompras', async (req, res) => {
 app.get('/listaitemcompras', async (req, res) => {
     await itemcompra.findAll({
         raw: true
-    }).then(function (itempedidos) {
-        res.json({ itempedidos })
+    }).then(function (itemcompras) {
+        res.json({ itemcompras })
     });
 });
 
@@ -607,6 +641,57 @@ app.get('/compras/:id/itemcompras', async (req, res) => {
     await itemcompra.findAll({ where: { CompraId: req.params.id }, include: [{ all: true }] })
         .then(itemcomp => {
             return res.json({ itemcomp });
+        });
+});
+
+app.get('/compra/:id/compras', async (req, res) => {
+    await itemcompra.findAll({
+        where: { CompraId: req.params.id }
+    })
+        .then(item => {
+            return res.json({
+                error: false,
+                item
+            });
+        }).catch(erro => {
+            return res.status(400).json({
+                error: true,
+                message: "Erro: não foi possível conectar!"
+            });
+        });
+});
+
+app.get('/itemcompra/:id/compra', async (req, res) => {
+    await compra.findAll({
+        where: { id: req.params.id }
+    })
+        .then(compra => {
+            return res.json({
+                error: false,
+                compra
+            });
+        }).catch(erro => {
+            return res.status(400).json({
+                error: true,
+                message: "Erro: não foi possível conectar!"
+            });
+        });
+});
+
+app.get('/itemcompra/:id/produto', async (req, res) => {
+    await produto.findAll({
+        where: { id: req.params.id }
+    })
+        .then(produto => {
+            return res.json({
+                error: false,
+                produto
+            });
+        }).catch(erro => {
+            return res.status(400).json({
+                error: true,
+                message: "Erro: não foi possível conectar!"
+            });
         });
 });
 
