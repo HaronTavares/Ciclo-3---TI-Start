@@ -4,6 +4,7 @@ const cors = require('cors');
 const { Sequelize } = require('./models');
 
 const models = require('./models');
+const { Promise } = require('sequelize');
 // const { get } = require('express/lib/response');
 // const req = require('express/lib/request');
 
@@ -55,17 +56,37 @@ app.get('/quantclientes', async (req, res) => {
 });
 
 app.get('/cliente/:id', async (req, res) => {
-    await cliente.findByPk(req.params.id).then(client => {
-        return res.json({
-            error: false,
-            client
+    await cliente.findAll({
+        where: { id: req.params.id }
+    })
+        .then(client => {
+            return res.json({
+                error: false,
+                client
+            });
+        }).catch(erro => {
+            return res.status(400).json({
+                error: true,
+                message: "Erro: não foi possível conectar!"
+            });
         });
-    }).catch(erro => {
-        return res.status(400).json({
-            error: true,
-            message: "Erro: não foi possível conectar!"
+});
+
+app.get('/cliente/:id/pedidos', async (req, res) => {
+    await pedido.findAll({
+        where: { ClienteId: req.params.id }
+    })
+        .then(pedido => {
+            return res.json({
+                error: false,
+                pedido
+            });
+        }).catch(erro => {
+            return res.status(400).json({
+                error: true,
+                message: "Erro: não foi possível conectar!"
+            });
         });
-    });
 });
 
 app.put('/atualizacliente', async (req, res) => {
@@ -135,6 +156,23 @@ app.get('/pedidos/:id', async (req, res) => {
     await pedido.findByPk(req.params.id, { include: [{ all: true }] })
         .then(ped => {
             return res.json({ ped });
+        });
+});
+
+app.get('/pedido/:id/pedidos', async (req, res) => {
+    await itempedido.findAll({
+        where: { PedidoId: req.params.id }
+    })
+        .then(item => {
+            return res.json({
+                error: false,
+                item
+            });
+        }).catch(erro => {
+            return res.status(400).json({
+                error: true,
+                message: "Erro: não foi possível conectar!"
+            });
         });
 });
 
@@ -216,19 +254,20 @@ app.get('/servico/:id', async (req, res) => {
 });
 
 app.get('/servico/:id/pedidos', async (req, res) => {
-    await itempedido.findAll({ 
-        where: { ServicoId: req.params.id } })
-    .then(item => {
-        return res.json({
-            error: false,
-            item
+    await itempedido.findAll({
+        where: { ServicoId: req.params.id }
+    })
+        .then(item => {
+            return res.json({
+                error: false,
+                item
+            });
+        }).catch(erro => {
+            return res.status(400).json({
+                error: true,
+                message: "Erro: não foi possível conectar!"
+            });
         });
-    }).catch(erro => {
-        return res.status(400).json({
-            error: true,
-            message: "Erro: não foi possível conectar!"
-        });
-    });
 });
 
 app.put('/atualizaservico', async (req, res) => {
@@ -269,7 +308,7 @@ app.post('/itempedidos', async (req, res) => {
     await itempedido.create(req.body).then(function () {
         return res.json({
             error: false,
-            messagem: "Item criado com sucesso!"
+            message: "Item criado com sucesso!"
         })
     }).catch(function () {
         return res.json({
@@ -298,6 +337,40 @@ app.get('/pedidos/:id/itempedidos', async (req, res) => {
     await itempedido.findAll({ where: { PedidoId: req.params.id }, include: [{ all: true }] })
         .then(itemped => {
             return res.json({ itemped });
+        });
+});
+
+app.get('/itempedido/:id/pedido', async (req, res) => {
+    await pedido.findAll({
+        where: { id: req.params.id }
+    })
+        .then(pedido => {
+            return res.json({
+                error: false,
+                pedido
+            });
+        }).catch(erro => {
+            return res.status(400).json({
+                error: true,
+                message: "Erro: não foi possível conectar!"
+            });
+        });
+});
+
+app.get('/itempedido/:id/servico', async (req, res) => {
+    await servico.findAll({
+        where: { id: req.params.id }
+    })
+        .then(servico => {
+            return res.json({
+                error: false,
+                servico
+            });
+        }).catch(erro => {
+            return res.status(400).json({
+                error: true,
+                message: "Erro: não foi possível conectar!"
+            });
         });
 });
 
